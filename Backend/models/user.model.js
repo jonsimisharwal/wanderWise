@@ -10,6 +10,11 @@ const userSchema=new Schema({
       minlength:[3,"username should be atleast 3 characters"],
       maxlength:[50,"username cannot exceed 50 characters"]
    },
+   fullname:{
+     type:String,
+     required:true,
+     trim:true
+   },
 
    email:{
     type:String,
@@ -30,16 +35,15 @@ const userSchema=new Schema({
     required:[true,"Password is required"],
     minlength:[6, "Password must be at least 6 characters"]
    },
-   profile:{
-    image: {
-         url: {
-            type: String,
-            default: ''
-         },
-         publicId: {
-            type: String,
-            default: ''
-         }
+   
+   avatar:{
+      type:String,
+      required:true
+   },
+    coverimage: {
+         type: String,
+            
+         
       },
    bio:{
     type:String,
@@ -51,7 +55,7 @@ const userSchema=new Schema({
        type: String,
       maxlength: [100, 'Location cannot exceed 100 characters'],
       default: ''
-   }},
+   },
    stats:{
     numberofCountriesTraveled:{
       type: Number,
