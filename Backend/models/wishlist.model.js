@@ -9,6 +9,7 @@ const wishlistSchema=new mongoose.Schema({
        type:Date,
        default:Date.now
     },
+    
     placeId:{
       type:Schema.Types.ObjectId,
       ref:"Place"
