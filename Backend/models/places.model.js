@@ -22,9 +22,13 @@ const PlaceSchema=new mongoose.Schema({
         maxlength: [2000, 'Description cannot exceed 2000 characters']
     },
     image:{
+             type:String,
+             required:[true,"image is required"]
 
     },
     snapshots:{
+              type:String,
+              required:false
 
     },
     rating:{
@@ -50,7 +54,9 @@ const PlaceSchema=new mongoose.Schema({
       maxlength: [200, 'Special months info cannot exceed 200 characters']
     },
     knownFor:{
-
+         type: String,
+         trim: true,
+        maxlength: [500, ' this place Famous for cannot exceed 500 characters']
     },
     budgetRange:{
      type: String,
@@ -58,7 +64,8 @@ const PlaceSchema=new mongoose.Schema({
     enum: {
       values: ['Budget (₹0-1000)', 'Mid-range (₹1000-5000)', 'Premium (₹5000-15000)', 'Luxury (₹15000+)'],
       message: 'Invalid budget range'
-    }
+    },
+    
     },
    filters_category:{
       type: String,
@@ -83,30 +90,17 @@ const PlaceSchema=new mongoose.Schema({
       message: 'Invalid continent'
     }
     },
-    filters_advancedFilters_range: {
-    type: String,
+    customizebudgetrange: {
+    type: Integer,
     trim: true,
-    enum: {
-      values: ['local', 'domestic', 'international'],
-      message: 'Invalid range filter'
+    validate: {
+      validator: function(value) {
+        return value >= 0; // Ensure budget range is non-negative
+      },
+      message: 'Budget range must be a non-negative integer'
     }
-  },
-  filters_advancedFilters_difficulty: {
-    type: String,
-    trim: true,
-    enum: {
-      values: ['easy', 'moderate', 'difficult', 'extreme'],
-      message: 'Invalid difficulty level'
-    }
-  },
-    filters_advancedFilters_bestSeason: {
-    type: String,
-    trim: true,
-    enum: {
-      values: ['spring', 'summer', 'monsoon', 'autumn', 'winter', 'year-round'],
-      message: 'Invalid season'
-    }
-  },
+    },
+  
 
 
 },{timestamps:true});
