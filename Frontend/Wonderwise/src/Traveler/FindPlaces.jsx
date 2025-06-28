@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Add this import
 import { Search, Filter, Heart, Star, DollarSign, Clock, Sun, Camera, MapPin, Plane, Car, Ship, Train } from 'lucide-react';
 
 const Places = () => {
+  const navigate = useNavigate(); // Add this hook
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedContinent, setSelectedContinent] = useState('all');
@@ -364,7 +366,12 @@ const Places = () => {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3 pt-4">
-                  <button className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-xl font-medium hover:from-pink-600 hover:to-purple-600 transition-all duration-300 shadow-md">
+                  <button
+                    onClick={() => {
+                      navigate('/tripplanner', { state: { place } });
+                    }}
+                    className="flex-1 bg-pink-900 text-white py-3 px-4 rounded-xl font-medium hover:bg-pink-800 transition-all duration-300 shadow-md"
+                  >
                     Plan Trip
                   </button>
                   <button className="px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-200 transition-all duration-300">
