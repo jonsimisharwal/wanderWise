@@ -5,10 +5,12 @@ import TravelFooter from './Traveler/TravelFooter'
 import StartJourney from './Traveler/StartJourney';
 import Places from './Traveler/FindPlaces';
 import TravelTales from './Traveler/TravelTales';
-
+import BookRequestPage from './Traveler/Bookrequestpage';
+import TripPlanner from './Traveler/Plantrip';
 
 import './App.css'
 import MyAdventures from './Traveler/MyAdventures';
+
 
 
 function App() {
@@ -29,13 +31,18 @@ function App() {
     </>} />
   <Route path="/FindPlaces" element={<><Places /><TravelFooter />
     </>} />
+
   <Route path="/TravelTales" element={<>
     <TravelTales/><TravelFooter /></>}/>
   <Route path='/contact' element={
        <div className='mt-14'>
       < TravelFooter/>
       </div>
+
   }></Route>
+   <Route path="/bookrequest" element={<><BookRequestPage /><TravelFooter /> </>}/>
+   <Route path="/tripplanner" element={<><TripPlanner /><TravelFooter />
+    </>} />
 </Routes>
        
      
