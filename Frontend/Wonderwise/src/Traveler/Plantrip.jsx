@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Star, MapPin, Calendar, Users, Plane, Hotel, Camera, Heart, Share2, Clock, DollarSign } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 const TripPlanner = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get place data from navigation state, fallback to sample data
+  const passedPlace = location.state?.place;
+  
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
@@ -15,26 +22,58 @@ const TripPlanner = () => {
       phone: ''
     }
   });
-  const navigate = useNavigate();
-  // Sample place data (this would come from props or API)
-  const placeData = {
-    id: 1,
-    name: "Goa Beach Paradise",
-    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800",
-    description: "Experience the perfect blend of Portuguese heritage and tropical paradise in Goa. From pristine beaches to vibrant nightlife, ancient churches to spice plantations, Goa offers an unforgettable escape.",
-    rating: 4.8,
-    totalReviews: 2847,
+
+  // Convert Places data structure to TripPlanner format
+  const placeData = passedPlace ? {
+    id: passedPlace.id,
+    name: passedPlace.name,
+    image: passedPlace.image, // Using sample image since Places uses emojis
+    description: passedPlace.description,
+    rating: passedPlace.rating,
+    totalReviews: passedPlace.reviews,
     budget: {
-      min: 15000,
-      max: 50000
+      min: passedPlace.priceLevel === 'budget' ? 5000 : passedPlace.priceLevel === 'mid' ? 15000 : 30000,
+      max: passedPlace.priceLevel === 'budget' ? 15000 : passedPlace.priceLevel === 'mid' ? 35000 : 80000
     },
-    knownFor: ["Beautiful Beaches", "Portuguese Architecture", "Vibrant Nightlife", "Water Sports", "Seafood Cuisine"],
+    knownFor: passedPlace.highlights,
     highlights: [
-      "Baga Beach water sports",
-      "Old Goa churches tour",
-      "Spice plantation visit",
-      "River cruise experience"
+      `Experience ${passedPlace.highlights[0]}`,
+      `Discover ${passedPlace.highlights[1]}`,
+      `Enjoy ${passedPlace.highlights[2] || 'local culture'}`,
+      `Visit ${passedPlace.highlights[3] || 'famous landmarks'}`
     ],
+    duration: passedPlace.duration,
+    bestTime: passedPlace.bestTime,
+    continent: passedPlace.continent,
+    category: passedPlace.category,
+    transportation: [
+      { type: "Flight", price: passedPlace.priceLevel === 'budget' ? "₹8,000 - ₹15,000" : passedPlace.priceLevel === 'mid' ? "₹12,000 - ₹25,000" : "₹20,000 - ₹50,000", duration: "2-8 hours" },
+      { type: "Train", price: "₹2,000 - ₹8,000", duration: "8-24 hours" },
+      { type: "Bus", price: "₹1,200 - ₹4,000", duration: "10-20 hours" }
+    ],
+    accommodations: [
+      { type: "Luxury Resort", price: passedPlace.priceLevel === 'luxury' ? "₹15,000 - ₹35,000/night" : "₹10,000 - ₹25,000/night", features: "Premium amenities, Spa, Fine dining" },
+      { type: "Mid-range Hotel", price: "₹4,000 - ₹12,000/night", features: "Comfortable rooms, Restaurant, Pool" },
+      { type: "Budget Hostel", price: "₹800 - ₹3,000/night", features: "Basic facilities, WiFi, Shared spaces" }
+    ],
+    activities: [
+      { name: `${passedPlace.highlights[0]} Experience`, price: "₹2,500", duration: "3-4 hours" },
+      { name: `${passedPlace.highlights[1]} Tour`, price: "₹1,800", duration: "4-5 hours" },
+      { name: `${passedPlace.highlights[2] || 'Cultural'} Walk`, price: "₹1,200", duration: "3 hours" },
+      { name: `${passedPlace.category} Adventure`, price: "₹2,000", duration: "Half day" },
+      { name: "Local Food Tour", price: "₹1,500", duration: "3-4 hours" }
+    ]
+  } : {
+    // Fallback sample data (your original hardcoded data)
+    id: 1,
+    name: "Sample Destination",
+    image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800",
+    description: "Experience an amazing destination with beautiful sights and rich culture.",
+    rating: 4.5,
+    totalReviews: 1500,
+    budget: { min: 15000, max: 50000 },
+    knownFor: ["Beautiful Sights", "Rich Culture", "Great Food", "Adventure"],
+    highlights: ["Scenic views", "Cultural sites", "Local cuisine", "Adventure activities"],
     transportation: [
       { type: "Flight", price: "₹8,000 - ₹15,000", duration: "2-3 hours" },
       { type: "Train", price: "₹2,000 - ₹5,000", duration: "12-15 hours" },
@@ -46,11 +85,11 @@ const TripPlanner = () => {
       { type: "Budget Hostel", price: "₹800 - ₹2,000/night", features: "Shared facilities, WiFi" }
     ],
     activities: [
-      { name: "Water Sports Package", price: "₹2,500", duration: "3-4 hours" },
-      { name: "Spice Plantation Tour", price: "₹1,200", duration: "4-5 hours" },
-      { name: "Old Goa Heritage Walk", price: "₹800", duration: "3 hours" },
-      { name: "Sunset River Cruise", price: "₹1,500", duration: "2 hours" },
-      { name: "Dudhsagar Falls Trek", price: "₹2,000", duration: "Full day" }
+      { name: "Sightseeing Tour", price: "₹2,500", duration: "3-4 hours" },
+      { name: "Cultural Experience", price: "₹1,200", duration: "4-5 hours" },
+      { name: "Food Tour", price: "₹800", duration: "3 hours" },
+      { name: "Adventure Activity", price: "₹1,500", duration: "2 hours" },
+      { name: "Local Market Visit", price: "₹500", duration: "2 hours" }
     ]
   };
 
@@ -106,6 +145,18 @@ const TripPlanner = () => {
                     <DollarSign className="text-green-400" size={20} />
                     <span>₹{placeData.budget.min.toLocaleString()} - ₹{placeData.budget.max.toLocaleString()}</span>
                   </div>
+                  {passedPlace && (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Clock className="text-blue-400" size={20} />
+                        <span>{passedPlace.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="text-red-400" size={20} />
+                        <span>{passedPlace.continent}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="flex gap-4">
                   <button className="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 transition-all">
@@ -143,6 +194,19 @@ const TripPlanner = () => {
                   </span>
                 ))}
               </div>
+              
+              {passedPlace && (
+                <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <span className="text-sm text-gray-600">Best Time:</span>
+                    <p className="font-semibold text-gray-800">{passedPlace.bestTime}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Category:</span>
+                    <p className="font-semibold text-gray-800 capitalize">{passedPlace.category}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -158,7 +222,12 @@ const TripPlanner = () => {
 
               <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl">
                 <h4 className="font-semibold text-gray-800 mb-2">💡 Travel Tip</h4>
-                <p className="text-gray-600 text-sm">Best time to visit is October to March for pleasant weather and clear skies.</p>
+                <p className="text-gray-600 text-sm">
+                  {passedPlace 
+                    ? `Best time to visit is ${passedPlace.bestTime} for optimal weather and experiences.`
+                    : 'Plan your trip during the recommended season for the best experience.'
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -345,10 +414,11 @@ const TripPlanner = () => {
           {/* Book Request Button */}
           <div className="text-center">
             <button
-              onClick={()=>{handleBookRequest();
-                navigate('/bookrequest', { state: { formData, placeData }})
+              onClick={() => {
+                handleBookRequest();
+                navigate('/bookrequest', { state: { formData, placeData }});
               }}
-              className="bg-pink-400 text-white px-12 py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg"
+              className="bg-pink-900 text-white px-12 py-4 rounded-xl font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 shadow-lg"
             >
               Send Booking Request
             </button>
