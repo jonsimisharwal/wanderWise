@@ -30,14 +30,14 @@ import tripplanrouter from "./routes/Tripplan.Routes.js";
 
 //routes-decelaration
 app.use('/api/wishlist', wishlistRouter);
-app.use('/api/tripplan', tripplanrouter);
+app.use('/api/tripplanner', tripplanrouter);
 app.use('/api/feedback', feedbackrouter);
-app.use('/api/places', placerouter);
+app.use('/api/FindPlaces', placerouter);
 app.use('/api/posts', postrouter);
-app.use('/api/travelblog', travelblogrouter);
+app.use('/api/TravelBlogs', travelblogrouter);
 app.use('/api/users', userrouter);
-app.use('/api/traveltales', traveltalerouter);
-app.use('/api/book-requests', bookrequestrouter);
+app.use('/api/TravelTales', traveltalerouter);
+app.use('/api/bookrequest', bookrequestrouter);
 
 
 
