@@ -6,7 +6,8 @@ import {
     toggleLikePost,
     addComment,
     sharePost,
-    getPostsByFilter
+    getPostsByFilter,
+    getAllPublishedPostsAdmin
 } from "../controllers/Post.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -22,5 +23,8 @@ postrouter.route("/filter/:filter").get(getPostsByFilter);
 postrouter.route("/:postId/like").post(verifyJWT, toggleLikePost);
 postrouter.route("/:postId/comment").post(verifyJWT, addComment);
 postrouter.route("/:postId/share").post(verifyJWT, sharePost);
+
+// Admin routes (authentication + admin role required)
+postrouter.route("/admin/published").get(verifyJWT, getAllPublishedPostsAdmin);
 
 export default postrouter;

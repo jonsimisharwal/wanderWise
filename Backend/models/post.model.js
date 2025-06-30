@@ -1,94 +1,109 @@
-import mongoose ,{Schema } from mongoose
-import { User } from "./user.model";
-const postSchema=new mongoose.Schema({
-    image:{
-      type: String,
-      required: true
+import mongoose, { Schema } from 'mongoose';
+
+const postSchema = new mongoose.Schema({
+    image: {
+        type: String,
+        required: true
     },
-    location:{
-      type: String,
-      required: true
+    location: {
+        type: String,
+        required: true
     },
-    title:{
-       type: String,
-       required: true,
-       trim: true,
-       maxlength: 200
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 200
     },
-    description:{
+    description: {
         type: String,
         required: false,
         maxlength: 1000
     },
-    filters:{
-          type: String,
-          required: true,
-          enum: ['adventure',  'romantic','relaxation','cultural' ,'party','spiritual','nature','family', 'roadtrip',''],
-          default: ''
+    filters: {
+        type: String,
+        required: true,
+        enum: ['adventure', 'romantic', 'relaxation', 'cultural', 'party', 'spiritual', 'nature', 'family', 'roadtrip', ''],
+        default: ''
     },
-    likes:{
-        count:{
-             type: Number,
-             default: 0,
-             min: 0
-
+    // Add isActive field for soft delete functionality
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    // Add isPublished field for admin functionality
+    isPublished: {
+        type: Boolean,
+        default: false
+    },
+    likes: {
+        count: {
+            type: Number,
+            default: 0,
+            min: 0
         },
-        users:{
-           type: String,
-           required: false,
-           default: ''
+        users: [{
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: true
+            },
+            likedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }]
+    },
+    comments: [{
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        content: {
+            type: String,
+            required: true,
+            maxlength: 500
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
         }
-    },
-    comments:{
-        userId:{
-          type: String,
-          required: true
+    }],
+    shares: {
+        count: {
+            type: Number,
+            default: 0,
+            min: 0
         },
-        content:{
-           type: String,
-           required: true,
-           maxlength: 500,
-           default:''
-        },
-        createdAt:{
-             type: Date,
-             default:Date.now
-
-        }
+        users: [{
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: true
+            },
+            sharedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }]
     },
-    shares:{
-        count:{
-             type: Number,
-             default: 0,
-             min: 0
-
-        },
-        users:{
-           type: String,
-           required: false,
-           default: ''
-        }
-    },
-    userId:{
-        type:Schema.Types.ObjectId,
-        ref:"User"
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
     }
-},{timestamps:true});
+}, { timestamps: true });
 
-// Pre-save middleware to validate interactions
+// Pre-save middleware to update counts
 postSchema.pre('save', function(next) {
-  // Ensure counts match the user lists
-  if (this.likes.users) {
-    const likeCount = this.likes.users.split(',').filter(id => id.trim()).length;
-    this.likes.count = likeCount;
-  }
-  
-  if (this.shares.users) {
-    const shareCount = this.shares.users.split(',').filter(id => id.trim()).length;
-    this.shares.count = shareCount;
-  }
-  
-  next();
+    // Update likes count
+    this.likes.count = this.likes.users.length;
+    
+    // Update shares count
+    this.shares.count = this.shares.users.length;
+    
+    next();
 });
 
-export const Post=mongoose.model("Post",postSchema);
+export const Post = mongoose.model("Post", postSchema);

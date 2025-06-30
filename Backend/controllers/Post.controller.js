@@ -1,12 +1,12 @@
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { Post } from "../models/post.model";
-import { User } from "../models/user.model";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { Post } from "../models/post.model.js";
+import { User } from "../models/user.model.js";
 
 //all blogs of registered user will display here
-const getAllPosts=asyncHandler(async(req,res)=>{
-   const { page = 1, limit = 10, filter } = req.query;
+const getAllPosts = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, filter } = req.query;
     
     // Build query
     const query = { isActive: true };
@@ -35,11 +35,11 @@ const getAllPosts=asyncHandler(async(req,res)=>{
             total
         }, "Posts retrieved successfully")
     );
-})
+});
 
 //show places
-const getPostById=asyncHandler(async(req,res)=>{
-  const { postId } = req.params;
+const getPostById = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
     
     const post = await Post.findOne({ _id: postId, isActive: true })
         .populate('userId', 'username email avatar')
@@ -55,10 +55,10 @@ const getPostById=asyncHandler(async(req,res)=>{
     return res.status(200).json(
         new ApiResponse(200, post, "Post retrieved successfully")
     );
-})
+});
 
-const getUserPosts=asyncHandler(async(req,res)=>{
-   const { userId } = req.params;
+const getUserPosts = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
     const { page = 1, limit = 10 } = req.query;
     
     // Check if user exists
@@ -88,10 +88,10 @@ const getUserPosts=asyncHandler(async(req,res)=>{
             total
         }, "User posts retrieved successfully")
     );
-})
+});
 
-const toggleLikePost=asyncHandler(async(req,res)=>{
-   const { postId } = req.params;
+const toggleLikePost = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
     const userId = req.user?._id;
     
     if (!userId) {
@@ -131,10 +131,10 @@ const toggleLikePost=asyncHandler(async(req,res)=>{
             }, "Post liked successfully")
         );
     }
-})
+});
 
-const addComment=asyncHandler(async(req,res)=>{
-   const { postId } = req.params;
+const addComment = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
     const { content } = req.body;
     const userId = req.user?._id;
     
@@ -170,9 +170,10 @@ const addComment=asyncHandler(async(req,res)=>{
     return res.status(201).json(
         new ApiResponse(201, updatedPost, "Comment added successfully")
     );
-})
-const sharePost=asyncHandler(async(req,res)=>{
-const { postId } = req.params;
+});
+
+const sharePost = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
     const userId = req.user?._id;
     
     if (!userId) {
@@ -200,10 +201,10 @@ const { postId } = req.params;
             sharesCount: post.shares.count 
         }, "Post shared successfully")
     );
-})
+});
 
-const getPostsByFilter=asyncHandler(async(req,res)=>{
-   const { filter } = req.params;
+const getPostsByFilter = asyncHandler(async (req, res) => {
+    const { filter } = req.params;
     const { page = 1, limit = 10 } = req.query;
     
     const posts = await Post.find({ 
@@ -230,7 +231,56 @@ const getPostsByFilter=asyncHandler(async(req,res)=>{
             filter
         }, `Posts with filter '${filter}' retrieved successfully`)
     );
-})
+});
+
+// Admin function to get all published posts
+const getAllPublishedPostsAdmin = asyncHandler(async (req, res) => {
+    // Check if user is admin
+    if (!req.user?.isAdmin) {
+        throw new ApiError(403, "Only admin users can access all published posts");
+    }
+    
+    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+    
+    const options = {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        sort: { [sortBy]: sortOrder === 'desc' ? -1 : 1 }
+    };
+    
+    // Get all published posts (assuming isPublished field exists in your Post model)
+    const posts = await Post.find({ 
+        isPublished: true,
+        isActive: true 
+    })
+        .populate('userId', 'username email avatar fullname')
+        .populate({
+            path: 'comments.userId',
+            select: 'username avatar'
+        })
+        .sort(options.sort)
+        .limit(options.limit)
+        .skip((options.page - 1) * options.limit);
+    
+    const totalPosts = await Post.countDocuments({ 
+        isPublished: true,
+        isActive: true 
+    });
+    
+    return res.status(200).json(
+        new ApiResponse(200, {
+            posts,
+            pagination: {
+                currentPage: options.page,
+                totalPages: Math.ceil(totalPosts / options.limit),
+                totalPosts,
+                hasNext: options.page < Math.ceil(totalPosts / options.limit),
+                hasPrev: options.page > 1
+            }
+        }, "All published posts retrieved successfully")
+    );
+});
+
 export {
     getAllPosts,
     getPostById,
@@ -238,5 +288,6 @@ export {
     toggleLikePost,
     addComment,
     sharePost,
-    getPostsByFilter
+    getPostsByFilter,
+    getAllPublishedPostsAdmin
 };

@@ -13,10 +13,17 @@ import {
     refreshAccessToken,
     getUserByUsername,
     uploadAvatar,
-    uploadCoverImage
+    uploadCoverImage,
+    // Admin functions
+    getAllUsers,
+    deleteUser,
+    updateUserAdminStatus,
+    getAdminAnalytics,
+    checkAdminStatus
 } from "../controllers/User.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyAdmin } from "../middlewares/admin.middleware.js";
 
 const userrouter = Router();
 
@@ -48,6 +55,7 @@ userrouter.route("/change-password").post(verifyJWT, changeCurrentPassword);
 // Current user routes
 userrouter.route("/current-user").get(verifyJWT, getCurrentUser);
 userrouter.route("/update-profile").patch(verifyJWT, updateUserProfile);
+userrouter.route("/check-admin").get(verifyJWT, checkAdminStatus);
 
 // User stats and achievements routes
 userrouter.route("/stats").get(verifyJWT, getUserStats);
@@ -67,5 +75,11 @@ userrouter.route("/cover-image").patch(
     upload.single("coverImage"), 
     uploadCoverImage
 );
+
+// ADMIN ROUTES (Admin access required)
+userrouter.route("/admin/users").get(verifyAdmin, getAllUsers);
+userrouter.route("/admin/analytics").get(verifyAdmin, getAdminAnalytics);
+userrouter.route("/admin/users/:userId").delete(verifyAdmin, deleteUser);
+userrouter.route("/admin/users/:userId/admin-status").patch(verifyAdmin, updateUserAdminStatus);
 
 export default userrouter;

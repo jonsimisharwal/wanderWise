@@ -13,8 +13,8 @@ const createPlace = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Name, continent, country, and budget are required");
     }
 
-    // Check if user is admin (assuming you have user role checking)
-    if (req.user?.role !== 'admin') {
+    // Check if user is admin (using isAdmin boolean field)
+    if (!req.user?.isAdmin) {
         throw new ApiError(403, "Only admin users can create places");
     }
 
