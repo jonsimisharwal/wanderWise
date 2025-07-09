@@ -6,7 +6,7 @@ import {
     Getblog,
     Shareblogtopost
 } from "../controllers/TravelBlog.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const travelblogrouter = Router();
 

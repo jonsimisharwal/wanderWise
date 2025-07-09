@@ -1,5 +1,5 @@
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import  ApiError  from "../utils/ApiError.js";
+import  ApiResponse  from "../utils/ApiResponse.js";
 import { BookRequest } from "../models/bookrequest.model.js";
 import { User } from "../models/user.model.js";
 import { Place } from "../models/places.model.js";
@@ -13,7 +13,7 @@ import twilio from "twilio";
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 // Email transporter configuration
-const emailTransporter = nodemailer.createTransporter({
+const emailTransporter = nodemailer.createTransport({
     service: 'gmail', // or your email service
     auth: {
         user: process.env.EMAIL_USER,

@@ -1,9 +1,9 @@
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { TravelBlog } from "../models/TravelBlog.model";
-import { User } from "../models/user.model";
-import { Post } from "../models/post.model";
-import { asyncHandler } from "../utils/asyncHandler";
+import  ApiError  from "../utils/ApiError.js";
+import  ApiResponse  from "../utils/ApiResponse.js";
+import { TravelBlog } from "../models/TravelBlog.model.js";
+import { User } from "../models/user.model.js";
+import { Post } from "../models/post.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 //in this add publish button in frontend

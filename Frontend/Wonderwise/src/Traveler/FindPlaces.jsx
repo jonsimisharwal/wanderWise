@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Add this import
+import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Heart, Star, DollarSign, Clock, Sun, Camera, MapPin, Plane, Car, Ship, Train } from 'lucide-react';
 
 const Places = () => {
-  const navigate = useNavigate(); // Add this hook
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedContinent, setSelectedContinent] = useState('all');
@@ -11,6 +11,64 @@ const Places = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  
+  // Individual heart states for each place - now with localStorage persistence
+  const [likedPlaces, setLikedPlaces] = useState({});
+  const [animatingHearts, setAnimatingHearts] = useState({});
+
+  // Load liked places from localStorage on component mount
+  useEffect(() => {
+    const savedLikedPlaces = localStorage.getItem('likedPlaces');
+    const savedFavorites = localStorage.getItem('favorites');
+    
+    if (savedLikedPlaces) {
+      try {
+        setLikedPlaces(JSON.parse(savedLikedPlaces));
+      } catch (error) {
+        console.error('Error parsing liked places from localStorage:', error);
+      }
+    }
+    
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch (error) {
+        console.error('Error parsing favorites from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save liked places to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('likedPlaces', JSON.stringify(likedPlaces));
+  }, [likedPlaces]);
+
+  // Save favorites to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const handleHeartClick = (placeId) => {
+    // Toggle the liked state for this specific place
+    setLikedPlaces(prev => ({
+      ...prev,
+      [placeId]: !prev[placeId]
+    }));
+    
+    // Trigger animation for this specific heart
+    setAnimatingHearts(prev => ({
+      ...prev,
+      [placeId]: true
+    }));
+    
+    // Reset animation after it completes
+    setTimeout(() => {
+      setAnimatingHearts(prev => ({
+        ...prev,
+        [placeId]: false
+      }));
+    }, 300);
+  };
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -150,6 +208,14 @@ const Places = () => {
         ? prev.filter(fav => fav !== id)
         : [...prev, id]
     );
+  };
+
+  // Clear all saved data function (optional - for testing or reset purposes)
+  const clearAllSavedData = () => {
+    localStorage.removeItem('likedPlaces');
+    localStorage.removeItem('favorites');
+    setLikedPlaces({});
+    setFavorites([]);
   };
 
   // Filter places based on search and filters
@@ -306,6 +372,23 @@ const Places = () => {
                     {place.continent}
                   </span>
                 </div>
+                
+                {/* Individual Heart for each place - now persistent */}
+                <div className="absolute top-4 right-4">
+                  <Heart 
+                    className={`cursor-pointer transition-all duration-300 ${
+                      likedPlaces[place.id] 
+                        ? 'fill-red-500 stroke-red-500' 
+                        : 'fill-none stroke-black hover:stroke-red-400'
+                    } ${
+                      animatingHearts[place.id] 
+                        ? 'transform scale-125' 
+                        : 'transform scale-100 hover:scale-110'
+                    }`}
+                    onClick={() => handleHeartClick(place.id)}
+                    size={24}
+                  />
+                </div>
               </div>
 
               {/* Content */}
@@ -402,6 +485,17 @@ const Places = () => {
             </button>
           </div>
         )}
+
+        {/* Optional: Reset button for testing (you can remove this in production) */}
+        <div className="fixed bottom-4 right-4">
+          <button
+            onClick={clearAllSavedData}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm shadow-lg transition-all duration-300"
+            title="Clear all saved data"
+          >
+            Reset Hearts
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import {
   Edit, 
   Shield, 
   Languages, 
-  Share2, 
+  Heart, 
   HelpCircle, 
   MessageSquare, 
   LifeBuoy, 
@@ -125,8 +125,53 @@ const authAPI = {
     }
     return null;
   }
+  
 };
-
+// Wishlist manager using localStorage fallback to memory
+const wishlistManager = {
+  getWishlist: () => {
+    try {
+      const stored = localStorage.getItem('wishlist');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      // Fallback to memory storage if localStorage not available
+      return window.memoryWishlist || [];
+    }
+  },
+  
+  addToWishlist: (placeId) => {
+    try {
+      const wishlist = wishlistManager.getWishlist();
+      if (!wishlist.includes(placeId)) {
+        const newWishlist = [...wishlist, placeId];
+        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+        return newWishlist;
+      }
+      return wishlist;
+    } catch (e) {
+      // Fallback to memory storage
+      window.memoryWishlist = window.memoryWishlist || [];
+      if (!window.memoryWishlist.includes(placeId)) {
+        window.memoryWishlist.push(placeId);
+      }
+      return window.memoryWishlist;
+    }
+  },
+  
+  removeFromWishlist: (placeId) => {
+    try {
+      const wishlist = wishlistManager.getWishlist();
+      const newWishlist = wishlist.filter(id => id !== placeId);
+      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+      return newWishlist;
+    } catch (e) {
+      // Fallback to memory storage
+      window.memoryWishlist = window.memoryWishlist || [];
+      window.memoryWishlist = window.memoryWishlist.filter(id => id !== placeId);
+      return window.memoryWishlist;
+    }
+  }
+};
 export default function TravelNavbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -138,6 +183,7 @@ export default function TravelNavbar() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   // Form states
   const [loginForm, setLoginForm] = useState({
@@ -162,7 +208,26 @@ export default function TravelNavbar() {
   const handleNavigation = (route) => {
     navigate(route);
   };
-
+   // Initialize wishlist count on component mount
+  useEffect(() => {
+    const updateWishlistCount = () => {
+      const wishlist = wishlistManager.getWishlist();
+      setWishlistCount(wishlist.length);
+    };
+    
+    updateWishlistCount();
+    
+    // Listen for wishlist changes from other components
+    const handleWishlistChange = () => {
+      updateWishlistCount();
+    };
+    
+    window.addEventListener('wishlistChanged', handleWishlistChange);
+    
+    return () => {
+      window.removeEventListener('wishlistChanged', handleWishlistChange);
+    };
+  }, []);
   // Check for stored authentication on component mount
   useEffect(() => {
     const storedAuth = authAPI.getStoredAuth();
@@ -478,18 +543,22 @@ export default function TravelNavbar() {
           <span className="font-medium">Language Settings</span>
         </button>
 
+        {/* Wishlist Button with Count */}
         <button
           onClick={() => {
-            setIsUserMenuOpen(false);
-            // Add your share profile logic here
-            showMessage('Share Profile feature coming soon!', 'success');
+          setIsUserMenuOpen(false);
+          navigate('/wishlist');
           }}
-          className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors text-left"
-        >
-          <Share2 className="w-5 h-5" />
-          <span className="font-medium">Share Profile</span>
-        </button>
-
+          className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors text-left relative"
+          >
+          <Heart className={`w-5 h-5 ${wishlistCount > 0 ? 'text-red-500' : 'text-gray-500'}`} />
+          <span className="font-medium">Wishlist</span>
+          {wishlistCount > 0 && (
+            <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+              {wishlistCount}
+            </span>
+          )}
+          </button>
         <button
           onClick={() => {
             setIsUserMenuOpen(false);

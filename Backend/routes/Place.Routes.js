@@ -6,8 +6,8 @@ import {
     getPlaceByFilters,
     getPlaceByCustomizedBudget,
     getPlaceByUser
-} from "../controllers/places.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+} from "../controllers/Place.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const placerouter = Router();
 

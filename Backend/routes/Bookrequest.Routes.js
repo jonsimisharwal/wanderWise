@@ -9,8 +9,8 @@ import {
     sendPhoneOTP,
     sendEmailVerification,
     getUserBookRequests
-} from "../controllers/bookrequest.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js"; // Assuming you have authentication middleware
+} from "../controllers/BookRequest.contoller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js"; // Assuming you have authentication middleware
 
 const bookrequestrouter = Router();
 

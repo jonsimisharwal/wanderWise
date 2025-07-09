@@ -1,5 +1,5 @@
 import mongoose,{Schema, SchemaTypes} from 'mongoose'
-import { User } from './user.model';
+import { User } from './user.model.js';
 const TravelBlogSchema=new Schema({
     userid:{
         type:Schema.Types.ObjectId,

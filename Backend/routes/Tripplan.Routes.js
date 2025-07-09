@@ -12,7 +12,7 @@ import {
     toggleTripPlanVisibility,
     getTripPlanStats
 } from "../controllers/Tripplan.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const tripplanrouter = Router();
 

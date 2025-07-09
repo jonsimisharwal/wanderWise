@@ -9,8 +9,8 @@ import {
     getactivities,
     getweather,
     getcurrency
-} from "../controllers/travelTales.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+} from "../controllers/TravelTale.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const traveltalerouter = Router();
 

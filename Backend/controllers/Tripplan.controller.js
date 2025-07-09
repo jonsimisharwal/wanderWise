@@ -1,9 +1,9 @@
-import { ApiError } from "../utils/ApiError";
-import ApiResponse from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { Tripplan } from "../models/Plantrip.model";
-import { Place } from "../models/places.model";
-import { User } from "../models/user.model";
+import  ApiError  from "../utils/ApiError.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { Tripplan } from "../models/Plantrip.model.js";
+import { Place } from "../models/places.model.js";
+
 
 // Get place details for trip planning
 const getPlaceForTripPlanning = asyncHandler(async (req, res) => {

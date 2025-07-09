@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
-import { User } from './user.model';
-import { Place } from './places.model';
+import { User } from './user.model.js';
+import { Place } from './places.model.js';
 const TripplanSchema = new mongoose.Schema({
     // User and Place References
     userId: {

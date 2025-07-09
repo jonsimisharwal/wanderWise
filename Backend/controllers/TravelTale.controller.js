@@ -1,9 +1,8 @@
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
-import { User } from "../models/user.model";
-import { Tripplan } from "../models/Plantrip.model";
-import { TravelTales } from "../models/TravelTales.model";
+import  ApiResponse  from "../utils/ApiResponse.js";
+import ApiError  from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.model.js";
+import { TravelTales } from "../models/TravelTales.model.js";
 
 //form of filling details by user[startdate,enddate,src,dest,numberof travels,mood,season,budget]
 //edit details by user
@@ -180,7 +179,7 @@ const getaccomodation = asyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(200, accommodationData, "Accommodation data retrieved successfully")
     );
-}
+});
 // display activities
 const getactivities = asyncHandler(async (req, res) => {
     // Fetch activities data based on src and dest

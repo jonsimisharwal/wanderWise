@@ -1,8 +1,13 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config({
+    path: './.env'
+})
 const app = express()
 
+const PORT= process.env.PORT || 8000;
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
@@ -13,6 +18,10 @@ app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
 app.use(cookieParser());
 
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🔗 Backend URL: http://localhost:${PORT}`);
+});
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Backend is working!' });
 });

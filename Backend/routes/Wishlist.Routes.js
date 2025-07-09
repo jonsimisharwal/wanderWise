@@ -4,7 +4,7 @@ import {
     removewishlist, 
     getwishlist 
 } from "../controllers/wishlist.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js"; // Assuming you have auth middleware
+import { verifyJWT } from "../middleware/auth.middleware.js"; // Assuming you have auth middleware
 
 const wishlistrouter = Router();
 

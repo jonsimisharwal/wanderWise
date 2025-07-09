@@ -1,5 +1,5 @@
-import mongoose,{Schema} from mongoose
-import { User } from "./user.model";
+import mongoose,{Schema} from 'mongoose';
+import { User } from "./user.model.js";
 const wishlistSchema=new mongoose.Schema({
     userId:{
       type:Schema.Types.ObjectId,

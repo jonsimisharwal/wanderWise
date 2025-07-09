@@ -1,5 +1,5 @@
 import mongoose,{Schema} from "mongoose";
-import { User } from "./user.model";
+import { User } from "./user.model.js";
 const TravelTaleSchema=new Schema({
     userId:{
         type:Schema.Types.ObjectId,
@@ -45,12 +45,12 @@ const TravelTaleSchema=new Schema({
         enum: ['spring', 'summer', 'autumn', 'winter'],
         required: true
     },
-    totalBudget:{
+    Budget:{
        type: Number,
         required: true,
         min: 0
     },
-    customizedBudget:{
+    customBudget:{
        type: Number,
        min: 0
     },
@@ -73,12 +73,7 @@ const TravelTaleSchema=new Schema({
         type: String
     },
     
-    additional_weather_conditions: {
-        type: String
-    },
-    additional_weather_forecast: {
-        type: String
-    },
+    
     additional_currencyConverter_fromCurrency: {
         type: String,
         uppercase: true,

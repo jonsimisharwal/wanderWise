@@ -91,7 +91,7 @@ const PlaceSchema=new mongoose.Schema({
     }
     },
     customizebudgetrange: {
-    type: Integer,
+    type: Number,
     trim: true,
     validate: {
       validator: function(value) {

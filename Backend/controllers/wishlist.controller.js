@@ -1,9 +1,9 @@
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { wishlist } from "../models/wishlist.model";
-import { User } from "../models/user.model";
-import { Place } from "../models/places.model";
-import { asyncHandler } from "../utils/asyncHandler";
+import  ApiError  from "../utils/ApiError.js";
+import  ApiResponse  from "../utils/ApiResponse.js";
+import { wishlist } from "../models/wishlist.model.js";
+import { User } from "../models/user.model.js";
+import { Place } from "../models/places.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 //add to wishlist
 const addwishlist=asyncHandler(async(req,res)=>{

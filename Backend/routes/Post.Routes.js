@@ -9,7 +9,7 @@ import {
     getPostsByFilter,
     getAllPublishedPostsAdmin
 } from "../controllers/Post.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const postrouter = Router();
 
